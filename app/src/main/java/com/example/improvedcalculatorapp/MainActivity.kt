@@ -15,11 +15,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
     }
+
     fun allClear(view: View) {
         binding.workingTV.text = ""
         binding.resultTV.text = ""
     }
+
     fun backSpace(view: View) {
         val length = binding.workingTV.length()
 
@@ -27,18 +30,19 @@ class MainActivity : AppCompatActivity() {
             binding.workingTV.text = binding.workingTV.text.subSequence(0, length - 1)
         }
     }
+
     fun numberAction(view: View) {
         if (view is Button) {
             if (view.text == ".") {
                 if (canAddDecimal) {
                     binding.workingTV.append(view.text)
                     canAddDecimal = false
-                } else
-                    binding.workingTV.append(view.text)
-            }
-            canAddOperation = true
+                }
+            } else binding.workingTV.append(view.text)
         }
+        canAddOperation = true
     }
+
     fun operatorAction(view: View) {
         if (view is Button && canAddOperation) {
             binding.workingTV.append(view.text)
@@ -46,9 +50,11 @@ class MainActivity : AppCompatActivity() {
             canAddDecimal = true
         }
     }
+
     fun evaluate(view: View) {
         binding.resultTV.text = calculateResults()
     }
+
     private fun calculateResults(): String {
         val digitsOperators = digitsOperators()
         if (digitsOperators.isEmpty()) return ""
@@ -59,6 +65,7 @@ class MainActivity : AppCompatActivity() {
         val result = addSubtractCalculate(timesDivision)
         return result.toString()
     }
+
     private fun timesDivisionCalculate(passedList: MutableList<Any>): MutableList<Any> {
         var list = passedList
         while (list.contains('x') || list.contains('/')) {
@@ -66,6 +73,7 @@ class MainActivity : AppCompatActivity() {
         }
         return list
     }
+
     private fun addSubtractCalculate(passedList: MutableList<Any>): Float {
         var result = passedList[0] as Float
 
@@ -73,15 +81,14 @@ class MainActivity : AppCompatActivity() {
             if (passedList[i] is Char && i != passedList.lastIndex) {
                 val operator = passedList[i]
                 val nextDigit = passedList[i + 1] as Float
-                if (operator == '+')
-                    result += nextDigit
-                if (operator == '-')
-                    result -= nextDigit
+                if (operator == '+') result += nextDigit
+                if (operator == '-') result -= nextDigit
             }
         }
 
         return result
     }
+
     private fun calcTimesDiv(passedList: MutableList<Any>): MutableList<Any> {
         val newList = mutableListOf<Any>()
         var restartIndex = passedList.size
@@ -107,31 +114,27 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            if (i > restartIndex)
-                newList.add(passedList[i])
+            if (i > restartIndex) newList.add(passedList[i])
         }
 
         return newList
     }
-    private fun digitsOperators(): MutableList<Any>
-    {
+
+    private fun digitsOperators(): MutableList<Any> {
         val list = mutableListOf<Any>()
         var currentDigit = ""
-        for(character in binding.workingTV.text)
-        {
-            if(character.isDigit() || character == '.')
-                currentDigit += character
-            else
-            {
+        for (character in binding.workingTV.text) {
+            if (character.isDigit() || character == '.') currentDigit += character
+            else {
                 list.add(currentDigit.toFloat())
                 currentDigit = ""
                 list.add(character)
             }
         }
 
-        if(currentDigit != "")
-            list.add(currentDigit.toFloat())
+        if (currentDigit != "") list.add(currentDigit.toFloat())
 
         return list
     }
+
 }
